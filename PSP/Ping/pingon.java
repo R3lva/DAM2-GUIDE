@@ -9,9 +9,12 @@ public class pingon {
 		System.out.println("Direccion:");
 		String dir = sc.nextLine();
 		ProcessBuilder pb = new ProcessBuilder("cmd","/c","ping",dir);
-		System.out.println("Trabajando");
 		Process p = pb.start();
-		int exit = p.waitFor();
+		while (p.isAlive()) {
+			System.out.println("Trabajando...");
+			Thread.sleep(1000);
+		}
+		int exit = p.exitValue();
 		if (exit == 1)
 			System.out.println("Error");
 		else
