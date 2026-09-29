@@ -1,30 +1,40 @@
-
 package com.example;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 public class Main {
-    //---Credits---//
+    // --- Credits --- //
     // Made By Fernando Relva Da Silva //
-    // Date : 23/09/2026//
+    // Date : 23/09/2026 //
+
+    // --- Components --- //
+    static JFrame jf = new JFrame("Calculadora");
+    static JPanel jp = new JPanel();
+    static JLabel jl = new JLabel("0.");
+    static JLabel jl2 = new JLabel("Calculadora by Fernando");
+
+    public static void change(String txt) {
+        if (jl.getText().equals("0.")) {
+            jl.setText("");
+        }
+        jl.setText(jl.getText() + txt);
+    }
 
     public static void main(String[] args) {
 
         FlatDarkLaf.setup();
 
-        //--- Components ---//
-        JFrame jf = new JFrame("Calculadora");
-        JPanel jp = new JPanel();
-        JLabel jl = new JLabel("0.");
-        JLabel jl2 = new JLabel("Calculadora by Fernando");
-
         JButton[] botons = new JButton[16];
-
+        jf.setLayout(new BorderLayout());
         String[] textos = {
             "1", "2", "3", "4",
             "5", "6", "7", "8",
@@ -32,7 +42,7 @@ public class Main {
             "X", "/", "=", "."
         };
 
-        ///-----------------------------------------------///
+        /// ----------------------------------------------- ///
         jf.setSize(500, 700);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jf.setLocationRelativeTo(null);
@@ -41,9 +51,9 @@ public class Main {
         jp.setLayout(null);
         jp.setBackground(Color.WHITE);
         jp.setBorder(new LineBorder(Color.BLACK, 1));
-        ///-----------------------------------------------///
+        /// ----------------------------------------------- ///
 
-        ///--- Texto Edit ---///
+        /// --- Texto Edit --- ///
         jl.setFont(new Font("Arial", Font.BOLD, 38));
         jl.setOpaque(true);
         jl.setBackground(Color.BLACK);
@@ -56,11 +66,22 @@ public class Main {
         jl2.setFont(new Font("Arial", Font.PLAIN, 22));
         jl2.setForeground(Color.BLACK);
 
-        ///---------------------------------------------///
-        ///--- Buttons ---///
+        /// --- ComboBox Modo de Calculadora --- ///
+        String[] modos = {"Normal", "Científica"};
+        JComboBox<String> comboModo = new JComboBox<>(modos);
+        comboModo.setBounds(15, 90, 130, 30);
+        comboModo.setFont(new Font("Arial", Font.BOLD, 14));
+        jp.add(comboModo);
+
+        /// --------------------------------------------- ///
+        /// --- Buttons --- ///
 
         for (int i = 0; i < 16; i++) {
             botons[i] = new JButton(textos[i]);
+            botons[i].setLayout(new BorderLayout());
+
+            // Listener directo sin problemas de variables efectivas finales
+            botons[i].addActionListener(e -> change(e.getActionCommand()));
 
             botons[i].putClientProperty("JButton.arc", 25);
             botons[i].setFont(new Font("Arial", Font.BOLD, 34));
@@ -81,41 +102,41 @@ public class Main {
             jp.add(botons[i]);
         }
 
-        //--- First Line ---//
+        // --- First Line --- //
         botons[0].setBounds(25, 145, 95, 95);
         botons[1].setBounds(155, 145, 95, 95);
         botons[2].setBounds(285, 145, 95, 95);
 
-        //--- Second Line ---//
+        // --- Second Line --- //
         botons[3].setBounds(25, 255, 95, 95);
         botons[4].setBounds(155, 255, 95, 95);
         botons[5].setBounds(285, 255, 95, 95);
 
-        //--- Three Line ---//
+        // --- Three Line --- //
         botons[6].setBounds(25, 365, 95, 95);
         botons[7].setBounds(155, 365, 95, 95);
         botons[8].setBounds(285, 365, 95, 95);
 
-        //--- Final Line ---//
+        // --- Final Line --- //
         botons[9].setBounds(25, 475, 95, 95);
         botons[15].setBounds(155, 475, 95, 95);
 
-        //--- Operator Buttons ---//
+        // --- Operator Buttons --- //
         botons[10].setBounds(410, 145, 60, 60);
         botons[11].setBounds(410, 235, 60, 60);
         botons[12].setBounds(410, 325, 60, 60);
         botons[13].setBounds(410, 415, 60, 60);
 
-        //--- Equal Button ---//
+        // --- Equal Button --- //
         botons[14].setBounds(410, 505, 60, 60);
         botons[14].setBackground(new Color(65, 110, 185));
 
-        //--- Separator Lines ---//
+        // --- Separator Lines --- //
 
         // Horizontal
         JPanel linea1 = new JPanel();
         linea1.setBackground(Color.BLACK);
-        linea1.setBounds(15, 100, 455, 1);
+        linea1.setBounds(15, 130, 455, 1);
 
         JPanel linea2 = new JPanel();
         linea2.setBackground(Color.BLACK);
@@ -136,17 +157,26 @@ public class Main {
         // Vertical
         JPanel vertical1 = new JPanel();
         vertical1.setBackground(Color.BLACK);
-        vertical1.setBounds(140, 100, 1, 485);
+        vertical1.setBounds(140, 130, 1, 455);
 
         JPanel vertical2 = new JPanel();
         vertical2.setBackground(Color.BLACK);
-        vertical2.setBounds(270, 100, 1, 485);
+        vertical2.setBounds(270, 130, 1, 455);
 
         JPanel vertical3 = new JPanel();
         vertical3.setBackground(Color.BLACK);
-        vertical3.setBounds(390, 100, 1, 485);
+        vertical3.setBounds(390, 130, 1, 455);
 
-        //--- Add Components ---//
+        comboModo.addKeyListener(null);
+        comboModo.addActionListener(e -> {
+            boolean esNormal = comboModo.getSelectedItem().equals("Normal");
+            for (int i = 10; i <= 14; i++) {
+                botons[i].setVisible(esNormal);
+            }
+            vertical3.setVisible(esNormal);
+        });
+
+        // --- Add Components --- //
         jp.add(linea1);
         jp.add(linea2);
         jp.add(linea3);
