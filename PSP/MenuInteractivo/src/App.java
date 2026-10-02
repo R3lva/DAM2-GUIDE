@@ -1,58 +1,85 @@
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) throws Exception {
-         ArrayList<String> pidlist = new ArrayList<String>();
-        while (true) {
-            
-        System.out.println("--------------------");
-        System.out.println("-> Primer Plano ");
-        System.out.println("-> Segundo Plano ");
-        System.out.println("-> PIDs ");
-        System.out.println("-> Exit ");
-        System.out.println("--------------------");
+        ArrayList<Process> pidlist = new ArrayList<Process>();
         Scanner op = new Scanner(System.in);
-            System.out.println("Opcion :");
-        int selec = op.nextInt();
 
-        ProcessBuilder p1 = new ProcessBuilder("cmd","/c", "timeout /t 10");
+        while (true) {
+            System.out.println("--------------------");
+            System.out.println("1. Primer Plano");
+            System.out.println("2. Segundo Plano");
+            System.out.println("3. PIDs");
+            System.out.println("4. Exit");
+            System.out.println("--------------------");
+            System.out.print("Opcion: ");
 
-    switch (selec) {
-        case 1:
-             try {
-            p1.inheritIO();
-            Process pr = p1.start();
-            pidlist.add(String.valueOf(pr.pid()));
-            pr.waitFor();
-            System.out.println("Espera");
-            } catch (Exception e) {}
-            break;
-       case 2:
-             try {
-           // p1.inheritIO();
-            Process pr = p1.start();
-            pidlist.add(String.valueOf(pr.pid()));
-            } catch (Exception e) {}
-            break;
-         case 3:
-             try {
-           // p1.inheritIO();
-            for (String pidname : pidlist) {
-                 System.out.println(pidname);
-                }
-            } catch (Exception e) {}
-            break;
-         case 4:
-             try {
-           // p1.inheritIO();
-            System.exit(0);
-            } catch (Exception e) {}
-            break;
-        default:
-            break;
-    }
-    }
+            if (!op.hasNextInt()) {
+                op.next();
+                continue;
+            }
+
+            int selec = op.nextInt();
+            ProcessBuilder p1 = new ProcessBuilder("cmd", "/c", "timeout /t 10");
+
+            switch (selec) {
+                case 1:
+                    try {
+                        p1.inheritIO();
+                        Process pr = p1.start();
+                        pidlist.add(pr);
+                        pr.waitFor();
+                        System.out.println("Espera finalizada");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 2:
+                    try {
+                        Process pr = p1.start();
+                        pidlist.add(pr);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 3:
+                    try {
+                        Iterator<Process> it = pidlist.iterator();
+                        while (it.hasNext()) {
+                            Process dame = it.next();
+                                System.out.println("PID [+] = " + dame.pid());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 4:
+                    try {
+                        Iterator<Process> it = pidlist.iterator();
+                        while (it.hasNext()) {
+                            Process dame = it.next();
+                            if (dame.isAlive()) {
+                                dame.destroy();
+                                System.out.println("PID [+] = " + dame.pid() + " - Delete");
+                            }
+                            it.remove(); 
+                        }
+                        op.close();
+                        System.exit(0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                default:
+                    System.out.println("Opción no válida.");
+                    break;
+            }
+        }
     }
 }
