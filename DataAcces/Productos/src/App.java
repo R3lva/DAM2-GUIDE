@@ -5,8 +5,8 @@ import dao.ProductoDao;
 
 public class App {
     public static void main(String[] args) throws Exception {
-    InterfazProductoDAO dao = new ProductoDao("C:\\Users\\DAM2\\Desktop\\Curso\\DAM2-GUIDE\\DataAcces\\Productos\\src\\Productos.txt", ",");
-    List<Producto> productos = dao.listarTodos();
+    InterfazProductoDAO dao = new ProductoDao("C:\\Users\\DAM2\\Desktop\\Curso\\DAM2-GUIDE\\DataAcces\\Productos\\src\\Productos.dat", ",");
+    List<Producto> productos = dao.listarTodosBinario();
     while (true)
     {
     
@@ -28,7 +28,7 @@ public class App {
                 double precio = Double.parseDouble(IO.readln("Introduce el precioi"+"\n"));
                 Producto pn = new Producto(id, nombre, precio);
                 productos.add(pn);
-                dao.guardarTodos(productos);
+                dao.guardarTodosBinario(productos);
                 break;
                 case "3":
                     System.exit(0);

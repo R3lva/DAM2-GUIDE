@@ -2,11 +2,18 @@ package dao;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import model.Producto;
 ///--------- Productos DAO ---------///
@@ -26,6 +33,26 @@ public class ProductoDao implements InterfazProductoDAO{
     public ProductoDao(String ruta, String patron) {
         this.ruta = ruta;
         this.patron = patron;
+    }
+    @Override 
+    public void guardarTodosBinario(List<Producto> productos)
+    {
+        File db = new File(ruta);
+        try 
+        {
+            //...Write on DB (IMPORTS)...//
+            FileOutputStream fo = new FileOutputStream(db);
+            ObjectOutputStream OB = new ObjectOutputStream(fo);
+            //...LOOP...//
+            for (int i = 0; i < productos.size(); i++)
+            OB.writeObject(productos.get(i));
+            OB.close();
+         } 
+         catch (IOException e) 
+         {
+            e.printStackTrace();
+        }
+        
     }
     @Override 
     public void guardarTodos(List<Producto> productos)
@@ -48,6 +75,33 @@ public class ProductoDao implements InterfazProductoDAO{
         }
         
     }
+    @Override 
+        public List<Producto> listarTodosBinario()
+    {
+        File db = new File(ruta);
+        ArrayList<Producto> products = new ArrayList<>();
+        try 
+        {
+            //...Read the DB (IMPORTS)...//
+            FileInputStream fr = new FileInputStream(db);
+            ObjectInputStream bw = new ObjectInputStream(fr);
+           while (true) {
+             try {
+                Producto producta = (Producto) bw.readObject();
+                products.add(producta);
+             } catch (Exception e) {
+                break;
+             }
+           }
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
+
     @Override 
         public List<Producto> listarTodos()
     {
